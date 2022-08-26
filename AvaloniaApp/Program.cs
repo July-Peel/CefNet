@@ -114,11 +114,9 @@ namespace AvaloniaApp
 			if (e.Name == "MessageBox.Show")
 			{
 				string message = e.Message.ArgumentList.GetString(0);
-				Dispatcher.UIThread.Post(() =>
+				Dispatcher.UIThread.Post(async () =>
 				{
-					var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-						.GetMessageBoxStandardWindow("title", message);
-					messageBoxStandardWindow.Show();
+					await MessageBox.Show(message);
 				});
 				e.Handled = true;
 				return;

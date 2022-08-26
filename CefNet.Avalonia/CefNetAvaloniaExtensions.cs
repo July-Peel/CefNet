@@ -79,31 +79,23 @@ namespace CefNet.Avalonia
 		}
 
 		/// <summary>
-		/// Gets the current state of the SHIFT, CTRL, and ALT keys, as well as the state of the mouse buttons.
+		/// Gets the current state of the SHIFT, CTRL, and ALT keys.
 		/// </summary>
 		/// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
 		/// <returns></returns>
-		public static CefEventFlags GetModifiers(this DragEventArgs e)
+		public static CefEventFlags GetKeyModifiers(this DragEventArgs e)
 		{
-#pragma warning disable CS0618 // Obsoleted InputModifiers
 			CefEventFlags flags = CefEventFlags.None;
-			InputModifiers state = e.Modifiers;
-			if (state.HasFlag(InputModifiers.LeftMouseButton))
-				flags |= CefEventFlags.LeftMouseButton;
-			if (state.HasFlag(InputModifiers.RightMouseButton))
-				flags |= CefEventFlags.RightMouseButton;
-			if (state.HasFlag(InputModifiers.Shift))
+			KeyModifiers keyState = e.KeyModifiers;
+			if (keyState.HasFlag(KeyModifiers.Shift))
 				flags |= CefEventFlags.ShiftDown;
-			if (state.HasFlag(InputModifiers.Control))
+			if (keyState.HasFlag(KeyModifiers.Control))
 				flags |= CefEventFlags.ControlDown;
-			if (state.HasFlag(InputModifiers.MiddleMouseButton))
-				flags |= CefEventFlags.MiddleMouseButton;
-			if (state.HasFlag(InputModifiers.Alt))
+			if (keyState.HasFlag(KeyModifiers.Alt))
 				flags |= CefEventFlags.AltDown;
-			if (state.HasFlag(InputModifiers.Windows))
+			if (keyState.HasFlag(KeyModifiers.Meta))
 				flags |= CefEventFlags.CommandDown;
 			return flags;
-#pragma warning restore CS0618
 		}
 
 		/// <summary>
