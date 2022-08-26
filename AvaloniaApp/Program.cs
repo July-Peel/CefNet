@@ -15,7 +15,7 @@ namespace AvaloniaApp
 	class Program
 	{
 		private static CefAppImpl app;
-		private static Timer messagePump;
+		private static DispatcherTimer messagePump;
 		private const int messagePumpDelay = 10;
 
 		// Initialization code. Don't use any Avalonia, third-party APIs or any
@@ -73,13 +73,18 @@ namespace AvaloniaApp
 		{
 			if (CefNetApplication.Instance.UsesExternalMessageLoop)
 			{
-				messagePump = new Timer(_ => Dispatcher.UIThread.Post(CefApi.DoMessageLoopWork), null, messagePumpDelay, messagePumpDelay);
+				messagePump = new DispatcherTimer(TimeSpan.FromMilliseconds(messagePumpDelay), DispatcherPriority.Normal, (s, e) =>
+				{
+					CefApi.DoMessageLoopWork();
+					Dispatcher.UIThread.RunJobs();
+				});
+				messagePump.Start();
 			}
 		}
 
 		private static void App_FrameworkShutdown(object sender, EventArgs e)
 		{
-			messagePump?.Dispose();
+			messagePump?.Stop();
 		}
 
 		private static async void OnScheduleMessagePumpWork(long delayMs)
