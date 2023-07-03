@@ -29,6 +29,7 @@ namespace CefNet.Internal
 			{
 				var cursor = new Cursor(cursorType);
 				IntPtr handle = GetPlatformHandle(cursor);
+
 				if (handle == default || _Cursors.ContainsKey(handle))
 					continue;
 
