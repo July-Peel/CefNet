@@ -29,6 +29,7 @@ namespace CefNet.Internal
 				throw new InvalidOperationException();
 
 			Menu = new ContextMenu();
+			Menu.ItemsSource = new AvaloniaList<object>();
 			Menu.Closed += Menu_Closed;
 			Build(Model, (AvaloniaList<object>)Menu.ItemsSource);
 		}

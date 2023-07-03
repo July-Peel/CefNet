@@ -2,6 +2,7 @@
 using Avalonia.Platform;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace CefNet.Internal
@@ -13,13 +14,12 @@ namespace CefNet.Internal
 
 		private static IntPtr GetPlatformHandle(Cursor cursor)
 		{
-			//if (cursor != null)
-			//{
-			//	if (cursor.PlatformImpl is IPlatformHandle i)
-			//	{
-			//		return i.Handle;
-			//	}
-			//}
+			if (cursor != null)
+			{
+				System.Reflection.PropertyInfo Impl = cursor.GetType().GetProperty("PlatformImpl", BindingFlags.Instance | BindingFlags.NonPublic);
+				IPlatformHandle data = Impl.GetValue(cursor, null) as IPlatformHandle;
+				return data.Handle;
+			}
 			return default;
 		}
 
@@ -29,6 +29,7 @@ namespace CefNet.Internal
 			{
 				var cursor = new Cursor(cursorType);
 				IntPtr handle = GetPlatformHandle(cursor);
+
 				if (handle == default || _Cursors.ContainsKey(handle))
 					continue;
 
