@@ -122,7 +122,9 @@ namespace AvaloniaApp
 			{
 				viewTab = new WebViewTab();
 				viewTab.WebView.Navigated += WebView_Navigated;
-				((AvaloniaList<object>)tabs.Items).Add(viewTab);
+
+				tabs.ItemsSource = new AvaloniaList<object>();
+				((AvaloniaList<object>)tabs.ItemsSource).Add(viewTab);
 				viewTab.Title = "about:blank";
 
 				tabs.SelectedItem = viewTab;

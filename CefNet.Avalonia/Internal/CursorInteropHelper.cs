@@ -13,13 +13,13 @@ namespace CefNet.Internal
 
 		private static IntPtr GetPlatformHandle(Cursor cursor)
 		{
-			if (cursor != null)
-			{
-				if (cursor.PlatformImpl is IPlatformHandle i)
-				{
-					return i.Handle;
-				}
-			}
+			//if (cursor != null)
+			//{
+			//	if (cursor.PlatformImpl is IPlatformHandle i)
+			//	{
+			//		return i.Handle;
+			//	}
+			//}
 			return default;
 		}
 

@@ -154,10 +154,11 @@ namespace CefNet
 			{
 				this.Startup?.Invoke(this, new ControlledApplicationLifetimeStartupEventArgs(args));
 
-				var lifetimeEvents = AvaloniaLocator.Current.GetService<IPlatformLifetimeEventsImpl>();
 
-				if (lifetimeEvents != null)
-					lifetimeEvents.ShutdownRequested += OnShutdownRequested;
+				//var lifetimeEvents = AvaloniaLocator.Current.GetService<IPlatformLifetimeEventsImpl>();
+
+				//if (lifetimeEvents != null)
+				//	lifetimeEvents.ShutdownRequested += OnShutdownRequested;
 
 				_cts = new CancellationTokenSource();
 				MainWindow?.Show();
@@ -183,22 +184,5 @@ namespace CefNet
 		}
 		
 	}
-
-	public static class CefNetApplicationLifetimeExtensions
-	{
-		public static int StartWithCefNetApplicationLifetime<T>(this T builder, string[] args, ShutdownMode shutdownMode = ShutdownMode.OnLastWindowClose)
-			where T : AppBuilderBase<T>, new()
-		{
-			CefNetApplicationLifetime lifetime = new CefNetApplicationLifetime
-			{
-				Args = args,
-				ShutdownMode = shutdownMode
-			};
-			builder.SetupWithLifetime(lifetime);
-			return lifetime.Start(args);
-		}
-	}
-
-
 
 }

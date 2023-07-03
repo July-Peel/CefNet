@@ -3,7 +3,7 @@
              x:Class="AvaloniaApp.App">
 
   <Application.Styles>
-    <SimpleTheme Mode="Light"/>
+    <SimpleTheme />
   </Application.Styles>
 
 </Application>

@@ -11,12 +11,12 @@ namespace AvaloniaApp
 	{
 		public static TabControl FindTabControl(this Control tab)
 		{
-			IControl control = tab;
+			Control control = tab;
 			while (control != null)
 			{
 				if (control is TabControl tabControl)
 					return tabControl;
-				control = control.Parent;
+				control = control.Parent as Control;
 			}
 			return null;
 		}

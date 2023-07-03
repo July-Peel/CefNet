@@ -70,13 +70,20 @@ namespace CefNet.Avalonia
 			}
 			Initialize();
 
-			this.GetPropertyChangedObservable(Control.BoundsProperty).Subscribe(OnBoundsChanged);
+			//this.GetPropertyChangedObservable(Control.BoundsProperty).Subscribe(OnBoundsChanged);
+			this.GetPropertyChangedObservable(Control.BoundsProperty)
+				.AddClassHandler<Visual>((t, args) =>
+				{
+					var (oldV, newV) = args.GetOldAndNewValue<Rect>();
+					OnBoundsChanged(EventArgs.Empty);
+				});
+
 
 			AddHandler(InputElement.KeyDownEvent, HandlePreviewKeyDown, RoutingStrategies.Tunnel, true);
 			AddHandler(InputElement.KeyUpEvent, HandlePreviewKeyUp, RoutingStrategies.Tunnel, true);
 			AddHandler<DragEventArgs>(DragDrop.DragEnterEvent, HandleDragEnter);
 			AddHandler<DragEventArgs>(DragDrop.DragOverEvent, HandleDragOver);
-			AddHandler<RoutedEventArgs>(DragDrop.DragLeaveEvent, HandleDragLeave);
+			AddHandler<DragEventArgs>(DragDrop.DragLeaveEvent, HandleDragLeave);
 			AddHandler<DragEventArgs>(DragDrop.DropEvent, HandleDrop);
 		}
 
@@ -90,7 +97,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="TextFound"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void AddTextFoundHandler(IInteractive element, EventHandler<TextFoundRoutedEventArgs> handler)
+		public static void AddTextFoundHandler(Interactive element, EventHandler<TextFoundRoutedEventArgs> handler)
 		{
 			element?.AddHandler(TextFoundEvent, handler);
 		}
@@ -100,7 +107,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="TextFound"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void RemoveTextFoundHandler(IInteractive element, EventHandler<TextFoundRoutedEventArgs> handler)
+		public static void RemoveTextFoundHandler(Interactive element, EventHandler<TextFoundRoutedEventArgs> handler)
 		{
 			element?.RemoveHandler(TextFoundEvent, handler);
 		}
@@ -115,7 +122,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="PdfPrintFinished"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void AddPdfPrintFinishedHandler(IInteractive element, EventHandler<PdfPrintFinishedRoutedEventArgs> handler)
+		public static void AddPdfPrintFinishedHandler(Interactive element, EventHandler<PdfPrintFinishedRoutedEventArgs> handler)
 		{
 			element?.AddHandler(PdfPrintFinishedEvent, handler);
 		}
@@ -125,7 +132,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="PdfPrintFinished"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void RemovePdfPrintFinishedHandler(IInteractive element, EventHandler<PdfPrintFinishedRoutedEventArgs> handler)
+		public static void RemovePdfPrintFinishedHandler(Interactive element, EventHandler<PdfPrintFinishedRoutedEventArgs> handler)
 		{
 			element?.RemoveHandler(PdfPrintFinishedEvent, handler);
 		}
@@ -140,7 +147,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="StatusTextChanged"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void AddStatusTextChangedHandler(IInteractive element, EventHandler<EventArgs> handler)
+		public static void AddStatusTextChangedHandler(Interactive element, EventHandler<EventArgs> handler)
 		{
 			element?.AddHandler(StatusTextChangedEvent, handler);
 		}
@@ -150,7 +157,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="StatusTextChanged"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void RemoveStatusTextChangedHandler(IInteractive element, EventHandler<EventArgs> handler)
+		public static void RemoveStatusTextChangedHandler(Interactive element, EventHandler<EventArgs> handler)
 		{
 			element?.RemoveHandler(StatusTextChangedEvent, handler);
 		}
@@ -165,7 +172,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="ScriptDialogOpening"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void AddScriptDialogOpeningHandler(IInteractive element, EventHandler<ScriptDialogOpeningRoutedEventArgs> handler)
+		public static void AddScriptDialogOpeningHandler(Interactive element, EventHandler<ScriptDialogOpeningRoutedEventArgs> handler)
 		{
 			element?.AddHandler(ScriptDialogOpeningEvent, handler);
 		}
@@ -175,7 +182,7 @@ namespace CefNet.Avalonia
 		/// </summary>
 		/// <param name="element">An object that raise the <see cref="ScriptDialogOpening"/> routed event.</param>
 		/// <param name="handler">The handler.</param>
-		public static void RemoveScriptDialogOpeningHandler(IInteractive element, EventHandler<ScriptDialogOpeningRoutedEventArgs> handler)
+		public static void RemoveScriptDialogOpeningHandler(Interactive element, EventHandler<ScriptDialogOpeningRoutedEventArgs> handler)
 		{
 			element?.RemoveHandler(ScriptDialogOpeningEvent, handler);
 		}
@@ -226,7 +233,7 @@ namespace CefNet.Avalonia
 
 			using (var windowInfo = new CefWindowInfo())
 			{
-				IPlatformHandle platformHandle = window.PlatformImpl.Handle;
+				IPlatformHandle platformHandle = window.TryGetPlatformHandle();
 				if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
 					windowInfo.SetAsWindowless(macOSHandle.GetNSWindowRetained());
 				else
@@ -393,7 +400,7 @@ namespace CefNet.Avalonia
 				DpiScale scale = OffscreenGraphics.DpiScale;
 
 				if (PlatformInfo.IsWindows && NativeMethods.DwmIsCompositionEnabled()
-					&& NativeMethods.DwmGetWindowAttribute(window.PlatformImpl.Handle.Handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, &windowBounds, sizeof(RECT)) == 0)
+					&& NativeMethods.DwmGetWindowAttribute(window.TryGetPlatformHandle().Handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, &windowBounds, sizeof(RECT)) == 0)
 				{
 					windowBounds = new RECT
 					{
@@ -563,7 +570,7 @@ namespace CefNet.Avalonia
 
 		public PixelPoint PointToScreen(Point point)
 		{
-			if (((IVisual)this).IsAttachedToVisualTree)
+			if (((Visual)this).IsAttachedToVisualTree())
 			{
 				PixelPoint pixelPoint = global::Avalonia.VisualExtensions.PointToScreen(this, point);
 				DpiScale dpi = OffscreenGraphics.DpiScale;

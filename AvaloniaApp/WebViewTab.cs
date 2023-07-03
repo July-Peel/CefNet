@@ -182,7 +182,7 @@ namespace AvaloniaApp
 			var tabs = this.Parent as TabControl;
 			if (tabs == null)
 				return;
-			((AvaloniaList<object>)tabs.Items).Remove(this);
+			((AvaloniaList<object>)tabs.ItemsSource).Remove(this);
 		}
 
 		private void HandleDocumentTitleChanged(object sender, DocumentTitleChangedEventArgs e)
@@ -213,7 +213,7 @@ namespace AvaloniaApp
 
 			var webview = new CustomWebView((WebView)this.WebView);
 
-			IPlatformHandle platformHandle = avaloniaWindow.PlatformImpl.Handle;
+			IPlatformHandle platformHandle = avaloniaWindow.TryGetPlatformHandle();
 			if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
 				e.WindowInfo.SetAsWindowless(macOSHandle.GetNSWindowRetained());
 			else
@@ -228,7 +228,7 @@ namespace AvaloniaApp
 		{
 			var tab = new WebViewTab(webview);
 			TabControl tabs = this.FindTabControl();
-			((AvaloniaList<object>)tabs.Items).Add(tab);
+			((AvaloniaList<object>)tabs.ItemsSource).Add(tab);
 			tabs.SelectedItem = tab;
 		}
 	}
