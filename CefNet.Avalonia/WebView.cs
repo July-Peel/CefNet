@@ -17,6 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Linq;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace CefNet.Avalonia
 {
@@ -341,12 +342,8 @@ namespace CefNet.Avalonia
 			}
 			else
 			{
-				drawingContext.DrawText(Brushes.Black, new Point(10, 10), new FormattedText
-				{
-					Text = this.GetType().Name,
-					Typeface = new Typeface(FontFamily, FontStyle, FontWeight),
-					FontSize = FontSize,
-				});
+				var formattedText = new FormattedText(this.GetType().Name, CultureInfo.InvariantCulture, FlowDirection, new Typeface(FontFamily, FontStyle, FontWeight), FontSize, Brushes.Black);
+				drawingContext.DrawText(formattedText, new Point(10, 10));
 			}
 		}
 
@@ -772,10 +769,10 @@ namespace CefNet.Avalonia
 			base.OnPointerMoved(e);
 		}
 
-		protected override void OnPointerLeave(PointerEventArgs e)
+		protected override void OnPointerExited(PointerEventArgs e)
 		{
 			SendMouseLeaveEvent();
-			base.OnPointerLeave(e);
+			base.OnPointerExited(e);
 		}
 
 		protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -977,7 +974,7 @@ namespace CefNet.Avalonia
 		protected virtual void OnDragEnter(DragEventArgs e)
 		{
 			Point mousePos = e.GetPosition(this);
-			SendDragEnterEvent((int)mousePos.X, (int)mousePos.Y, e.GetModifiers(), e.GetCefDragData(), e.DragEffects.ToCefDragOperationsMask());
+			SendDragEnterEvent((int)mousePos.X, (int)mousePos.Y, e.GetKeyModifiers(), e.GetCefDragData(), e.DragEffects.ToCefDragOperationsMask());
 			e.DragEffects = DragDropEffects.Copy & e.DragEffects;
 			e.Handled = true;
 		}
@@ -985,7 +982,7 @@ namespace CefNet.Avalonia
 		protected virtual void OnDragOver(DragEventArgs e)
 		{
 			Point mousePos = e.GetPosition(this);
-			SendDragOverEvent((int)mousePos.X, (int)mousePos.Y, e.GetModifiers(), e.DragEffects.ToCefDragOperationsMask());
+			SendDragOverEvent((int)mousePos.X, (int)mousePos.Y, e.GetKeyModifiers(), e.DragEffects.ToCefDragOperationsMask());
 			e.DragEffects = e.DragEffects & DragDropEffects.Copy;
 			e.Handled = true;
 		}
@@ -999,7 +996,7 @@ namespace CefNet.Avalonia
 		protected virtual void OnDrop(DragEventArgs e)
 		{
 			Point mousePos = e.GetPosition(this);
-			SendDragDropEvent((int)mousePos.X, (int)mousePos.Y, e.GetModifiers());
+			SendDragDropEvent((int)mousePos.X, (int)mousePos.Y, e.GetKeyModifiers());
 
 			if (e.Data.Contains(nameof(CefNetDragData)))
 			{
