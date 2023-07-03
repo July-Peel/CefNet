@@ -156,7 +156,7 @@ namespace CefNet.Internal
 			if (window == null)
 				return;
 
-			IntPtr hwnd = window.PlatformImpl.Handle.Handle;
+			IntPtr hwnd = window.TryGetPlatformHandle().Handle;
 
 			if (_HookedWindows.ContainsKey(hwnd))
 				return;

@@ -92,7 +92,7 @@ namespace AvaloniaApp
 			// Navigation (and other tasks) require waiting until the BrowserCreated event has fired.
 			try
 			{
-				SelectedView?.Navigate("https://google.com");
+				SelectedView?.Navigate("https://baidu.com");
 			}
 			catch (InvalidOperationException ioe)
 			{
@@ -122,7 +122,8 @@ namespace AvaloniaApp
 			{
 				viewTab = new WebViewTab();
 				viewTab.WebView.Navigated += WebView_Navigated;
-				((AvaloniaList<object>)tabs.Items).Add(viewTab);
+				tabs.ItemsSource = new AvaloniaList<object>();
+				((AvaloniaList<object>)tabs.ItemsSource).Add(viewTab);
 				viewTab.Title = "about:blank";
 
 				tabs.SelectedItem = viewTab;

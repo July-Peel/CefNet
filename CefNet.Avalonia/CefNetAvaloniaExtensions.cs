@@ -87,20 +87,14 @@ namespace CefNet.Avalonia
 		{
 #pragma warning disable CS0618 // Obsoleted InputModifiers
 			CefEventFlags flags = CefEventFlags.None;
-			InputModifiers state = e.Modifiers;
-			if (state.HasFlag(InputModifiers.LeftMouseButton))
-				flags |= CefEventFlags.LeftMouseButton;
-			if (state.HasFlag(InputModifiers.RightMouseButton))
-				flags |= CefEventFlags.RightMouseButton;
-			if (state.HasFlag(InputModifiers.Shift))
+			KeyModifiers keyState = e.KeyModifiers;
+			if (keyState.HasFlag(KeyModifiers.Shift))
 				flags |= CefEventFlags.ShiftDown;
-			if (state.HasFlag(InputModifiers.Control))
+			if (keyState.HasFlag(KeyModifiers.Control))
 				flags |= CefEventFlags.ControlDown;
-			if (state.HasFlag(InputModifiers.MiddleMouseButton))
-				flags |= CefEventFlags.MiddleMouseButton;
-			if (state.HasFlag(InputModifiers.Alt))
+			if (keyState.HasFlag(KeyModifiers.Alt))
 				flags |= CefEventFlags.AltDown;
-			if (state.HasFlag(InputModifiers.Windows))
+			if (keyState.HasFlag(KeyModifiers.Meta))
 				flags |= CefEventFlags.CommandDown;
 			return flags;
 #pragma warning restore CS0618

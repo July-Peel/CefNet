@@ -9,6 +9,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 
@@ -154,10 +155,11 @@ namespace CefNet
 			{
 				this.Startup?.Invoke(this, new ControlledApplicationLifetimeStartupEventArgs(args));
 
-				var lifetimeEvents = AvaloniaLocator.Current.GetService<IPlatformLifetimeEventsImpl>();
+				//迁移问题
+				//var lifetimeEvents = AvaloniaLocator.Current.GetService<IPlatformLifetimeEventsImpl>();
 
-				if (lifetimeEvents != null)
-					lifetimeEvents.ShutdownRequested += OnShutdownRequested;
+				//if (lifetimeEvents != null)
+				//	lifetimeEvents.ShutdownRequested += OnShutdownRequested;
 
 				_cts = new CancellationTokenSource();
 				MainWindow?.Show();
@@ -186,8 +188,7 @@ namespace CefNet
 
 	public static class CefNetApplicationLifetimeExtensions
 	{
-		public static int StartWithCefNetApplicationLifetime<T>(this T builder, string[] args, ShutdownMode shutdownMode = ShutdownMode.OnLastWindowClose)
-			where T : AppBuilderBase<T>, new()
+		public static int StartWithCefNetApplicationLifetime(AppBuilder builder, string[] args, ShutdownMode shutdownMode = ShutdownMode.OnLastWindowClose)
 		{
 			CefNetApplicationLifetime lifetime = new CefNetApplicationLifetime
 			{

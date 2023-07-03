@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CefNet.Modern.Forms\CefNet.Modern.Forms.csproj" />
     <ProjectReference Include="..\CefNet\CefNet.csproj" />
   </ItemGroup>
 

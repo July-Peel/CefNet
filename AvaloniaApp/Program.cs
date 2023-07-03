@@ -24,26 +24,15 @@ namespace AvaloniaApp
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			string cefPath;
+			string cefPath = Path.Combine(AppContext.BaseDirectory, "cef");
 			bool externalMessagePump = args.Contains("--external-message-pump");
-
-			if (PlatformInfo.IsMacOS)
-			{
-				externalMessagePump = true;
-				cefPath = Path.Combine(GetProjectPath(), "Contents", "Frameworks", "Chromium Embedded Framework.framework");
-			}
-			else
-			{
-				cefPath = Path.Combine(Path.GetDirectoryName(GetProjectPath()), "cef");
-			}
-
 			var settings = new CefSettings();
 			settings.MultiThreadedMessageLoop = !externalMessagePump;
 			settings.ExternalMessagePump = externalMessagePump;
 			settings.NoSandbox = true;
 			settings.WindowlessRenderingEnabled = true;
-			settings.LocalesDirPath = Path.Combine(cefPath, "Resources", "locales");
-			settings.ResourcesDirPath = Path.Combine(cefPath, "Resources");
+			settings.LocalesDirPath = Path.Combine(cefPath, "locales");
+			settings.ResourcesDirPath = cefPath;
 			settings.LogSeverity = CefLogSeverity.Warning;
 			settings.UncaughtExceptionStackSize = 8;
 
@@ -53,13 +42,13 @@ namespace AvaloniaApp
 			app = new CefAppImpl();
 			app.CefProcessMessageReceived += App_CefProcessMessageReceived;
 			app.ScheduleMessagePumpWorkCallback = OnScheduleMessagePumpWork;
-			app.Initialize(PlatformInfo.IsMacOS ? cefPath : Path.Combine(cefPath, "Release"), settings);
+			app.Initialize(cefPath, settings);
 
 			BuildAvaloniaApp()
 			// workaround for https://github.com/AvaloniaUI/Avalonia/issues/3533
 			// this workaround causes crash on M1: https://github.com/AvaloniaUI/Avalonia/issues/3808
 			//.With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS })
-			.StartWithCefNetApplicationLifetime(args);
+			.StartWithClassicDesktopLifetime(args);
 		}
 
 		// Avalonia configuration, don't remove; also used by visual designer.

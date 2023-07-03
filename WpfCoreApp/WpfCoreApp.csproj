@@ -12,8 +12,4 @@
     <Compile Include="..\WinFormsCoreApp\CefAppImpl.cs" Link="CefAppImpl.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CefNet.Wpf\CefNet.Wpf.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -16,8 +16,9 @@
     <Compile Include="..\WinFormsCoreApp\CefAppImpl.cs" Link="CefAppImpl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.17" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.17" />
+    <PackageReference Include="Avalonia" Version="11.0.0-rc2.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.0-rc2.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-rc2.2" />
     <PackageReference Include="MessageBox.Avalonia" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup>

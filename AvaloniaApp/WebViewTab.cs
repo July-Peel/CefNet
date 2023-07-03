@@ -11,22 +11,17 @@ using CefNet;
 using CefNet.Avalonia;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace AvaloniaApp
 {
 	public class WebViewTab : TabItem, IStyleable
 	{
-		private class ColoredFormattedText : FormattedText
-		{
-			public IBrush Brush { get; set; }
-
-		}
-
 		private class WebViewTabTitle : TemplatedControl
 		{
 			private WebViewTab _tab;
-			private ColoredFormattedText _xButton;
+			private FormattedText _xButton;
 			private IBrush _xbuttonBrush;
 			public WebViewTabTitle(WebViewTab tab)
 			{
@@ -37,7 +32,7 @@ namespace AvaloniaApp
 			{
 				get
 				{
-					return FormattedText?.Text;
+					return FormattedText?.ToString();
 				}
 				set
 				{
@@ -47,32 +42,32 @@ namespace AvaloniaApp
 						this.InvalidateMeasure();
 						return;
 					}
-					this.FormattedText = new ColoredFormattedText
-					{
-						Text = value,
-						Typeface = new Typeface(FontFamily, FontStyle, FontWeight),
-						FontSize = FontSize,
-						Brush = Brushes.Black,
-					};
+					this.FormattedText = new FormattedText(
+						value,
+						CultureInfo.CurrentCulture,
+						FlowDirection,
+						new Typeface(FontFamily, FontStyle, FontWeight),
+						FontSize,
+						Brushes.Black);
 					this.InvalidateMeasure();
 				}
 			}
 
-			private ColoredFormattedText FormattedText { get; set; }
+			private FormattedText FormattedText { get; set; }
 
-			private ColoredFormattedText XButton
+			private FormattedText XButton
 			{
 				get
 				{
 					if (_xButton == null)
 					{
-						_xButton = new ColoredFormattedText
-						{
-							Text = "x",
-							Typeface = new Typeface(FontFamily, FontStyle, FontWeight.Bold),
-							FontSize = FontSize,
-							Brush = Brushes.Gray,
-						};
+						_xButton = new FormattedText(
+							"x",
+							CultureInfo.CurrentCulture,
+							FlowDirection,
+							new Typeface(FontFamily, FontStyle, FontWeight.Bold),
+							FontSize,
+							Brushes.Gray);
 					}
 					return _xButton;
 				}
@@ -83,8 +78,7 @@ namespace AvaloniaApp
 				var ft = this.FormattedText;
 				if (ft == null)
 					return base.MeasureOverride(constraint);
-				Rect ftbounds = ft.Bounds;
-				return new Size(ftbounds.Width + XButton.Bounds.Width + 4, ftbounds.Height);
+				return new Size(ft.Width + XButton.Width + 4, ft.Height);
 			}
 
 			protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -101,8 +95,7 @@ namespace AvaloniaApp
 
 			private Rect GetXButtonRect()
 			{
-				Rect xbounds = XButton.Bounds;
-				return new Rect(Bounds.Width - xbounds.Width, 0, xbounds.Width, xbounds.Height);
+				return new Rect(Bounds.Width - XButton.Width, 0, XButton.Width, XButton.Height);
 			}
 
 			protected override void OnPointerMoved(PointerEventArgs e)
@@ -111,10 +104,10 @@ namespace AvaloniaApp
 				base.OnPointerMoved(e);
 			}
 
-			protected override void OnPointerLeave(PointerEventArgs e)
+			protected override void OnPointerExited(PointerEventArgs e)
 			{
 				SetXButtonBrush(Brushes.Gray);
-				base.OnPointerLeave(e);
+				base.OnPointerExited(e);
 			}
 
 			private void SetXButtonBrush(ISolidColorBrush brush)
@@ -122,19 +115,19 @@ namespace AvaloniaApp
 				if (brush != _xbuttonBrush)
 				{
 					_xbuttonBrush = brush;
-					XButton.Brush = brush;
+					XButton.SetForegroundBrush(brush);
 					this.InvalidateVisual();
 				}
 			}
 
 			public override void Render(DrawingContext drawingContext)
 			{
-				ColoredFormattedText formattedText = this.FormattedText;
+				FormattedText formattedText = this.FormattedText;
 				if (formattedText == null)
 					return;
 
-				drawingContext.DrawText(formattedText.Brush, new Point(), formattedText);
-				drawingContext.DrawText(XButton.Brush, new Point(Bounds.Width - XButton.Bounds.Width, 0), XButton);
+				drawingContext.DrawText(formattedText, new Point());
+				drawingContext.DrawText(XButton, new Point(Bounds.Width - XButton.Width, 0));
 			}
 		}
 
@@ -189,7 +182,7 @@ namespace AvaloniaApp
 			var tabs = this.Parent as TabControl;
 			if (tabs == null)
 				return;
-			((AvaloniaList<object>)tabs.Items).Remove(this);
+			((AvaloniaList<object>)tabs.ItemsSource).Remove(this);
 		}
 
 		private void HandleDocumentTitleChanged(object sender, DocumentTitleChangedEventArgs e)
@@ -220,7 +213,7 @@ namespace AvaloniaApp
 
 			var webview = new CustomWebView((WebView)this.WebView);
 
-			IPlatformHandle platformHandle = avaloniaWindow.PlatformImpl.Handle;
+			IPlatformHandle platformHandle = avaloniaWindow.TryGetPlatformHandle();
 			if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
 				e.WindowInfo.SetAsWindowless(macOSHandle.GetNSWindowRetained());
 			else
@@ -235,7 +228,7 @@ namespace AvaloniaApp
 		{
 			var tab = new WebViewTab(webview);
 			TabControl tabs = this.FindTabControl();
-			((AvaloniaList<object>)tabs.Items).Add(tab);
+			((AvaloniaList<object>)tabs.ItemsSource).Add(tab);
 			tabs.SelectedItem = tab;
 		}
 	}

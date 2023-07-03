@@ -7,7 +7,7 @@ namespace AvaloniaApp
 {
 	public class FullscreenModeChangeEventArgs : RoutedEventArgs
 	{
-		public FullscreenModeChangeEventArgs(IInteractive source, bool fullscreen)
+		public FullscreenModeChangeEventArgs(Interactive source, bool fullscreen)
 			: base(CustomWebView.FullscreenEvent, source)
 		{
 			this.Fullscreen = fullscreen;
