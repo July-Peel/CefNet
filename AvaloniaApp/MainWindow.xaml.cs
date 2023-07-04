@@ -92,7 +92,7 @@ namespace AvaloniaApp
 			// Navigation (and other tasks) require waiting until the BrowserCreated event has fired.
 			try
 			{
-				SelectedView?.Navigate("https://google.com");
+				SelectedView?.Navigate("https://baidu.com");
 			}
 			catch (InvalidOperationException ioe)
 			{
